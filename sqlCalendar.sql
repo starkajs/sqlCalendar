@@ -17,6 +17,9 @@
               RETURN @TotWorkingDays;
           END;
       GO
+
+        
+        
 -- prevent set or regional settings from interfering with 
 -- interpretation of dates / literals
 SET DATEFIRST  7, -- 1 = Monday, 7 = Sunday
@@ -73,15 +76,14 @@ SELECT
     the_iso_week,
     the_month,
     the_month_name,
-    the_month_working_day = 0,
-    the_quarter,
-    the_year,
-    the_year_working_day = 0,
+the_month_working_day = dbo.fn_GetTotalWorkingDaysUsingLoop(the_first_of_month, the_date),
+          the_quarter,
+          the_year,
+          the_year_working_day = dbo.fn_GetTotalWorkingDaysUsingLoop(DATEFROMPARTS(YEAR(the_date), 1, 1), the_date),
     the_first_of_month,
     the_last_of_year,
     the_day_of_year,
     the_day_of_week
 FROM dim
   ORDER BY the_date
-  OPTION (MAXRECURSION 0);
-
+  OPTION (MAXRECURSION 0);        
